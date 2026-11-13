@@ -9,7 +9,11 @@ cd "$(dirname "$0")"
 # Homebrew Python ships tkinter separately
 if ! python3 -c "import tkinter" >/dev/null 2>&1; then
     echo "tkinter missing — installing python-tk via Homebrew..."
-    brew install python-tk || brew install "python-tk@$(python3 -c 'import sys;print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+    # Homebrew refuses to run under Rosetta 2 on Apple Silicon; retry natively
+    brew install python-tk >/dev/null 2>&1 || \
+    arch -arm64 brew install python-tk || \
+    brew install "python-tk@$(python3 -c 'import sys;print(f"{sys.version_info.major}.{sys.version_info.minor}")')" || \
+    arch -arm64 brew install "python-tk@$(python3 -c 'import sys;print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
 fi
 
 if [ ! -d venv ]; then
