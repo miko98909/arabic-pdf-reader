@@ -13,27 +13,50 @@ A lightweight Acrobat-style PDF reader with built-in OCR, made for Arabic (and E
 - Copy selection with ⌘C; OCR a whole page with the "OCR الصفحة" button
 - Shortcuts: ⌘O open, ←/→ or PageUp/PageDown navigate, scroll wheel to scroll
 
-## Setup on macOS
+## Setup on macOS (easy way)
 
-1. Install Python 3 from [python.org](https://www.python.org/downloads/)
-   (includes tkinter and pip).
+Run the launcher — it handles everything (virtual environment, tkinter,
+dependencies, OCR data) and remembers it after the first run:
 
-2. Install dependencies:
+```sh
+chmod +x run.sh
+./run.sh                # or: ./run.sh كتابك.pdf
+```
+
+## Setup on macOS (manual way)
+
+Homebrew's Python needs two extra steps: tkinter comes as a separate
+package (`python-tk`), and pip refuses system-wide installs (PEP 668),
+so use a virtual environment:
+
+1. Install tkinter for your Homebrew Python:
    ```sh
-   pip3 install -r requirements.txt
+   brew install python-tk
+   ```
+   (If you use the python.org installer instead, tkinter is already included
+   and you can skip this step.)
+
+2. Create a virtual environment and install dependencies:
+   ```sh
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
    ```
 
 3. Download the Arabic OCR data (one time, ~17 MB):
    ```sh
-   python3 download_tessdata.py
+   python download_tessdata.py
    ```
    (Alternative: `brew install tesseract tesseract-lang` and the reader will
    find the Homebrew tessdata automatically.)
 
 4. Run:
    ```sh
-   python3 pdf_reader.py [file.pdf]
+   python pdf_reader.py [file.pdf]
    ```
+
+> Note: activate the environment (`source venv/bin/activate`) in each new
+> terminal session, or just use `./run.sh` which does it for you.
 
 ## How text selection works
 Drag the mouse over any text. If the page has a real text layer, the text is
